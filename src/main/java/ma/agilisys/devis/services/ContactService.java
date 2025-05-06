@@ -1,20 +1,13 @@
 package ma.agilisys.devis.services;
 
-import ma.agilisys.devis.dtos.ContactDto;
-import ma.agilisys.devis.dtos.ContactRequest;
+import ma.agilisys.devis.dtos.ContactRequestDto;
+import ma.agilisys.devis.dtos.ContactResponseDto;
 
 import java.util.List;
 
 public interface ContactService {
-    List<ContactDto> getAllContacts();
 
-    ContactDto getContactById(Long id);
+    ContactResponseDto createContact(ContactRequestDto contactRequestDto);
 
-    ContactDto createContact(ContactRequest contactRequest);
-
-    ContactDto updateContact(Long id, ContactRequest contactRequest);
-
-    void deleteContact(Long id);
-
-    List<ContactDto> getContactsByClient(Long clientId);
+    List<ContactResponseDto> getContactsByClient(Long clientId);
 }

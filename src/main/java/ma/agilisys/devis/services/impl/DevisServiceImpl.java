@@ -168,12 +168,10 @@ public class DevisServiceImpl implements DevisService {
     public void deleteDevis(Long id) {
         Devis devis = devisRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Devis non trouvé avec l'ID: " + id));
-
         // Vérifier que le devis est en statut DRAFT
         if (!Constants.DRAFT_STATUS.equals(devis.getStatut())) {
             throw new IllegalStateException("Seul un devis en statut DRAFT peut être supprimé");
         }
-
         devisRepository.delete(devis);
     }
 }

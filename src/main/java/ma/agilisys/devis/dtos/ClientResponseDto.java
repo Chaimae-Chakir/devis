@@ -6,7 +6,7 @@ import java.time.ZonedDateTime;
 import java.util.Set;
 
 @Data
-public class ClientDto {
+public class ClientResponseDto {
     private Long id;
     private String nom;
     private String ice;
@@ -15,5 +15,5 @@ public class ClientDto {
     private String ville;
     private String pays;
     private ZonedDateTime dateCreation;
-    private Set<Long> contactIds;
+    private Set<ContactResponseDto> contacts;
 }

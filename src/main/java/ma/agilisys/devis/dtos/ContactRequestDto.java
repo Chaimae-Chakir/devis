@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class ContactRequest {
+public class ContactRequestDto {
     @Size(max = 120)
     private String email;
 

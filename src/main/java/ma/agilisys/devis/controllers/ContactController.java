@@ -2,8 +2,8 @@ package ma.agilisys.devis.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import ma.agilisys.devis.dtos.ContactDto;
-import ma.agilisys.devis.dtos.ContactRequest;
+import ma.agilisys.devis.dtos.ContactRequestDto;
+import ma.agilisys.devis.dtos.ContactResponseDto;
 import ma.agilisys.devis.services.ContactService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,37 +17,14 @@ import java.util.List;
 public class ContactController {
     private final ContactService contactService;
 
-    @GetMapping
-    public ResponseEntity<List<ContactDto>> getAllContacts() {
-        return ResponseEntity.ok(contactService.getAllContacts());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<ContactDto> getContactById(@PathVariable Long id) {
-        return ResponseEntity.ok(contactService.getContactById(id));
-    }
-
     @PostMapping
-    public ResponseEntity<ContactDto> createContact(@Valid @RequestBody ContactRequest contactRequest) {
-        ContactDto createdContact = contactService.createContact(contactRequest);
+    public ResponseEntity<ContactResponseDto> createContact(@Valid @RequestBody ContactRequestDto contactRequestDto) {
+        ContactResponseDto createdContact = contactService.createContact(contactRequestDto);
         return new ResponseEntity<>(createdContact, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ContactDto> updateContact(
-            @PathVariable Long id,
-            @Valid @RequestBody ContactRequest contactRequest) {
-        return ResponseEntity.ok(contactService.updateContact(id, contactRequest));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteContact(@PathVariable Long id) {
-        contactService.deleteContact(id);
-        return ResponseEntity.noContent().build();
-    }
-
     @GetMapping("/client/{clientId}")
-    public ResponseEntity<List<ContactDto>> getContactsByClient(@PathVariable Long clientId) {
+    public ResponseEntity<List<ContactResponseDto>> getContactsByClient(@PathVariable Long clientId) {
         return ResponseEntity.ok(contactService.getContactsByClient(clientId));
     }
 }

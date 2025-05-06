@@ -5,11 +5,10 @@ import lombok.Data;
 import java.time.ZonedDateTime;
 
 @Data
-public class ContactDto {
+public class ContactResponseDto {
     private Long id;
     private String email;
     private String telephone;
     private String fax;
-    private Long clientId;
     private ZonedDateTime dateCreation;
 }
