@@ -18,17 +18,14 @@ public class Contact {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 120)
-    private String nom;
-
     @Column(length = 120)
     private String email;
 
     @Column(length = 20)
     private String telephone;
 
-    @Column(length = 100)
-    private String fonction;
+    @Column(length = 20)
+    private String fax;
 
     @ManyToOne
     @JoinColumn(name = "id_client", nullable = false)

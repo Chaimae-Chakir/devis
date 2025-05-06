@@ -9,4 +9,6 @@ public interface BonCommandeClientRepository extends JpaRepository<BonCommandeCl
     Optional<BonCommandeClient> findByDevisId(Long devisId);
 
     boolean existsByDevisId(Long devisId);
+
+    Optional<BonCommandeClient> findByDevis_Id(Long id);
 }

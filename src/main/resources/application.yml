@@ -11,5 +11,13 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  batch:
+    job:
+      enabled: false
 server:
   port: 8081
+
+pdf:
+  storage:
+    path: ./devis-pdf
+  base-url: http://localhost:8081/pdf/

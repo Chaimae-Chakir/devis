@@ -12,11 +12,7 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DevisLigneDTO {
-    private Long id;
-
-    private Long devisId;
-
+public class DevisLigneRequestDTO {
     @Size(max = 255, message = "La description ne peut pas dépasser 255 caractères")
     private String descriptionLibre;
 

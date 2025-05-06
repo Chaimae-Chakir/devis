@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DevisDTO {
+public class DevisResponseDTO {
     private Long id;
 
     private String numero; // Généré automatiquement
@@ -37,7 +37,7 @@ public class DevisDTO {
     private BigDecimal totalHt;
 
     @Valid
-    private List<DevisLigneDTO> lignes = new ArrayList<>();
+    private List<DevisLigneResponseDTO> lignes = new ArrayList<>();
 
     // DevisMeta
     private String perimetre;

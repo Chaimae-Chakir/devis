@@ -1,6 +1,7 @@
 package ma.agilisys.devis.mappers;
 
-import ma.agilisys.devis.dtos.DevisDTO;
+import ma.agilisys.devis.dtos.DevisRequestDTO;
+import ma.agilisys.devis.dtos.DevisResponseDTO;
 import ma.agilisys.devis.models.Devis;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -16,10 +17,10 @@ public interface DevisMapper {
     @Mapping(target = "conditions", source = "meta.conditions")
     @Mapping(target = "planning", source = "meta.planning")
     @Mapping(target = "offrePdfUrl", source = "meta.offrePdfUrl")
-    DevisDTO toDto(Devis devis);
+    DevisResponseDTO toDto(Devis devis);
 
     //    @Mapping(target = "client", source = "clientId")
     @Mapping(target = "meta", ignore = true)
     @Mapping(target = "bonCommandeClient", ignore = true)
-    Devis toEntity(DevisDTO devisDto);
+    Devis toEntity(DevisRequestDTO devisRequestDTO);
 }

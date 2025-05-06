@@ -1,15 +1,13 @@
 package ma.agilisys.devis.mappers;
 
-import ma.agilisys.devis.dtos.DevisLigneDTO;
+import ma.agilisys.devis.dtos.DevisLigneRequestDTO;
+import ma.agilisys.devis.dtos.DevisLigneResponseDTO;
 import ma.agilisys.devis.models.DevisLigne;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface DevisLigneMapper {
-    @Mapping(source = "devis.id", target = "devisId")
-    DevisLigneDTO toDto(DevisLigne devisLigne);
+    DevisLigneResponseDTO toDto(DevisLigne devisLigne);
 
-    @Mapping(source = "devisId", target = "devis.id")
-    DevisLigne toEntity(DevisLigneDTO devisLigneDTO);
+    DevisLigne toEntity(DevisLigneRequestDTO devisLigneRequestDTO);
 }
