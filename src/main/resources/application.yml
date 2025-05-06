@@ -14,10 +14,14 @@ spring:
   batch:
     job:
       enabled: false
+    jdbc:
+      initialize-schema: always
 server:
   port: 8081
 
-pdf:
-  storage:
-    path: ./devis-pdf
-  base-url: http://localhost:8081/pdf/
+app:
+  file:
+    upload-dir: ./uploads
+  pdf:
+    generation:
+      batch-delay: 120000 # 2 minutes en millisecondes

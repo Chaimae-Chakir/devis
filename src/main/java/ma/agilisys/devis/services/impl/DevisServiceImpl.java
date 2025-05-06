@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -58,19 +57,16 @@ public class DevisServiceImpl implements DevisService {
     public DevisResponseDTO createDevis(DevisRequestDTO devisRequestDTO) {
         Client client = clientRepository.findById(devisRequestDTO.getClientId())
                 .orElseThrow(() -> new EntityNotFoundException("Client non trouvé avec l'ID: " + devisRequestDTO.getClientId()));
-
         Devis devis = devisMapper.toEntity(devisRequestDTO);
         devis.setNumero(devisNumberGenerator.generateUniqueNumber());
         devis.setStatut(Constants.DRAFT_STATUS);
         devis.setClient(client);
         devis.setDateCreation(ZonedDateTime.now());
-        // Gestion des lignes de devis
         List<DevisLigne> lignes = devisRequestDTO.getLignes().stream()
                 .map(devisLigneMapper::toEntity)
-                .collect(Collectors.toList());
+                .toList();
         lignes.forEach(ligne -> ligne.setDevis(devis));
         devis.setLignes(lignes);
-        // Création des métadonnées
         DevisMeta meta = DevisMeta.builder()
                 .conditions(devisRequestDTO.getConditions())
                 .offreFonctionnelle(devisRequestDTO.getOffreFonctionnelle())
@@ -90,7 +86,6 @@ public class DevisServiceImpl implements DevisService {
     public DevisResponseDTO updateDevis(Long id, DevisRequestDTO devisRequestDTO) {
         Devis existingDevis = devisRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Devis non trouvé avec l'ID: " + id));
-        // Mise à jour des métadonnées
         if (existingDevis.getMeta() != null) {
             existingDevis.getMeta().setPerimetre(devisRequestDTO.getPerimetre());
             existingDevis.getMeta().setOffreFonctionnelle(devisRequestDTO.getOffreFonctionnelle());
@@ -113,11 +108,9 @@ public class DevisServiceImpl implements DevisService {
     public DevisResponseDTO validateDevis(Long id, String validatedBy) {
         Devis devis = devisRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Devis non trouvé avec l'ID: " + id));
-        // Vérification que le devis est bien en brouillon
         if (!Constants.DRAFT_STATUS.equals(devis.getStatut())) {
-            throw new IllegalStateException("Seul un devis en statut DRAFT peut être validé");
+            throw new IllegalStateException("Seul un devis en statut Brouillon peut être validé");
         }
-        // Mise à jour du statut
         devis.setStatut(Constants.APPROVED_STATUS);
         devis.setDateValidation(ZonedDateTime.now());
         devis.setValidatedBy(validatedBy);
@@ -168,7 +161,6 @@ public class DevisServiceImpl implements DevisService {
     public void deleteDevis(Long id) {
         Devis devis = devisRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Devis non trouvé avec l'ID: " + id));
-        // Vérifier que le devis est en statut DRAFT
         if (!Constants.DRAFT_STATUS.equals(devis.getStatut())) {
             throw new IllegalStateException("Seul un devis en statut DRAFT peut être supprimé");
         }
