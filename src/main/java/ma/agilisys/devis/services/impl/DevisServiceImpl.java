@@ -33,13 +33,10 @@ public class DevisServiceImpl implements DevisService {
 
     @Override
     public List<DevisResponseDTO> getAllDevis(Long clientId) {
-        if (clientId == null) {
-            throw new IllegalArgumentException("L'identifiant du client ne doit pas être nul.");
-        }
-        List<Devis> devisList = devisRepository.findByClientId(clientId);
-        if (devisList.isEmpty()) {
-            throw new EntityNotFoundException("Aucun devis trouvé pour le client avec l'identifiant : " + clientId);
-        }
+        List<Devis> devisList = clientId == null
+                ? devisRepository.findAll()
+                : devisRepository.findByClientId(clientId);
+
         return devisList.stream()
                 .map(devisMapper::toDto)
                 .toList();
@@ -161,9 +158,6 @@ public class DevisServiceImpl implements DevisService {
     public void deleteDevis(Long id) {
         Devis devis = devisRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Devis non trouvé avec l'ID: " + id));
-        if (!Constants.DRAFT_STATUS.equals(devis.getStatut())) {
-            throw new IllegalStateException("Seul un devis en statut DRAFT peut être supprimé");
-        }
         devisRepository.delete(devis);
     }
 }

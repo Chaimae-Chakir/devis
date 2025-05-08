@@ -11,6 +11,8 @@ import ma.agilisys.devis.services.ClientService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -41,5 +43,10 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public boolean existsByIce(String ice) {
         return clientRepository.existsByIce(ice);
+    }
+
+    @Override
+    public List<ClientResponseDto> getAllClient() {
+        return clientRepository.findClientsWithContact().stream().map(clientMapper::toDto).toList();
     }
 }
