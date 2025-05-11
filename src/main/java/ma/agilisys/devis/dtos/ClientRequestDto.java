@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class ClientRequestDto {
+    private Long id;
     @NotBlank
     @Size(max = 120)
     private String nom;

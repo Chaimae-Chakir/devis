@@ -1,9 +1,8 @@
 package ma.agilisys.devis.services;
 
+import ma.agilisys.devis.dtos.ClientPageDto;
 import ma.agilisys.devis.dtos.ClientRequestDto;
 import ma.agilisys.devis.dtos.ClientResponseDto;
-
-import java.util.List;
 
 public interface ClientService {
 
@@ -13,5 +12,9 @@ public interface ClientService {
 
     boolean existsByIce(String ice);
 
-    List<ClientResponseDto> getAllClient();
+    ClientPageDto getAllClient(int page, int size);
+
+    ClientResponseDto updateClient(Long id, ClientRequestDto clientRequestDto);
+
+    void deleteClient(Long id);
 }

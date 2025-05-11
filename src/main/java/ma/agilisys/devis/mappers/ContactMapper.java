@@ -15,4 +15,9 @@ public interface ContactMapper {
     @Mapping(target = "dateCreation", ignore = true)
     @Mapping(target = "client", ignore = true)
     Contact toEntity(ContactRequestDto contactRequestDto);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "dateCreation", ignore = true)
+    @Mapping(target = "client", ignore = true)
+    Contact toEntity(ContactResponseDto contactResponseDto);
 }

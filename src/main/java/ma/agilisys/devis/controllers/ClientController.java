@@ -2,14 +2,13 @@ package ma.agilisys.devis.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import ma.agilisys.devis.dtos.ClientPageDto;
 import ma.agilisys.devis.dtos.ClientRequestDto;
 import ma.agilisys.devis.dtos.ClientResponseDto;
 import ma.agilisys.devis.services.ClientService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/clients")
@@ -29,8 +28,22 @@ public class ClientController {
         return new ResponseEntity<>(createdClient, HttpStatus.CREATED);
     }
 
+
     @GetMapping
-    public ResponseEntity<List<ClientResponseDto>> getAllClients() {
-        return ResponseEntity.ok(clientService.getAllClient());
+    public ResponseEntity<ClientPageDto> getAllClients(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        return ResponseEntity.ok(clientService.getAllClient(page, size));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ClientResponseDto> updateClient(@PathVariable Long id, @Valid @RequestBody ClientRequestDto clientRequestDto) {
+        return ResponseEntity.ok(clientService.updateClient(id, clientRequestDto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
+        clientService.deleteClient(id);
+        return ResponseEntity.noContent().build();
     }
 }

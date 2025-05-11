@@ -3,6 +3,7 @@ package ma.agilisys.devis.services.impl;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import ma.agilisys.devis.dtos.DevisPageDto;
 import ma.agilisys.devis.dtos.DevisRequestDTO;
 import ma.agilisys.devis.dtos.DevisResponseDTO;
 import ma.agilisys.devis.mappers.DevisLigneMapper;
@@ -16,6 +17,8 @@ import ma.agilisys.devis.repositories.DevisRepository;
 import ma.agilisys.devis.services.DevisService;
 import ma.agilisys.devis.utils.Constants;
 import ma.agilisys.devis.utils.DevisNumberGenerator;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
@@ -32,14 +35,15 @@ public class DevisServiceImpl implements DevisService {
     private final DevisLigneMapper devisLigneMapper;
 
     @Override
-    public List<DevisResponseDTO> getAllDevis(Long clientId) {
-        List<Devis> devisList = clientId == null
-                ? devisRepository.findAll()
-                : devisRepository.findByClientId(clientId);
-
-        return devisList.stream()
-                .map(devisMapper::toDto)
-                .toList();
+    public DevisPageDto getAllDevis(int page, int size) {
+        Page<Devis> devisPage = devisRepository.findAll(PageRequest.of(page, size));
+        return DevisPageDto.builder()
+                .currentPage(page)
+                .pageSize(size)
+                .totalPages(devisPage.getTotalPages())
+                .totalElements(devisPage.getTotalElements())
+                .devis(devisPage.getContent().stream().map(devisMapper::toDto).toList())
+                .build();
     }
 
     @Override

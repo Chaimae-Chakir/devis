@@ -1,13 +1,12 @@
 package ma.agilisys.devis.services;
 
 import jakarta.transaction.Transactional;
+import ma.agilisys.devis.dtos.DevisPageDto;
 import ma.agilisys.devis.dtos.DevisRequestDTO;
 import ma.agilisys.devis.dtos.DevisResponseDTO;
 
-import java.util.List;
-
 public interface DevisService {
-    List<DevisResponseDTO> getAllDevis(Long clientId);
+    DevisPageDto getAllDevis(int page, int size);
 
     DevisResponseDTO getDevisById(Long devisId);
 

@@ -2,6 +2,7 @@ package ma.agilisys.devis.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import ma.agilisys.devis.dtos.DevisPageDto;
 import ma.agilisys.devis.dtos.DevisRequestDTO;
 import ma.agilisys.devis.dtos.DevisResponseDTO;
 import ma.agilisys.devis.services.DevisPdfGenerator;
@@ -13,8 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/v1/devis")
 @RequiredArgsConstructor
@@ -24,8 +23,10 @@ public class DevisController {
     private final DevisPdfGenerator pdfGenerator;
 
     @GetMapping
-    public ResponseEntity<List<DevisResponseDTO>> getAllDevis(@RequestParam(required = false) Long clientId) {
-        return ResponseEntity.ok(devisService.getAllDevis(clientId));
+    public ResponseEntity<DevisPageDto> getAllDevis(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        return ResponseEntity.ok(devisService.getAllDevis(page, size));
     }
 
     @GetMapping("/{id}")
