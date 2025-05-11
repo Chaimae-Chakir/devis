@@ -5,7 +5,6 @@ import ma.agilisys.devis.dtos.ClientResponseDto;
 import ma.agilisys.devis.models.Client;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring", uses = ContactMapper.class)
 public interface ClientMapper {
@@ -18,8 +17,9 @@ public interface ClientMapper {
     @Mapping(target = "devis", ignore = true)
     Client toEntity(ClientRequestDto clientRequestDto);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "dateCreation", ignore = true)
     @Mapping(target = "contacts", ignore = true)
     @Mapping(target = "devis", ignore = true)
-    @Mapping(target = "dateCreation", ignore = true)
-    void updateClientFromDto(ClientResponseDto dto, @MappingTarget Client entity);
+    Client toEntity(ClientResponseDto clientResponseDto);
 }

@@ -33,12 +33,12 @@ public class ClientController {
     public ResponseEntity<ClientPageDto> getAllClients(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
-        return ResponseEntity.ok(clientService.getAllClient(page, size));
+        return ResponseEntity.ok(clientService.getAllClients(page, size));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClientResponseDto> updateClient(@PathVariable Long id, @Valid @RequestBody ClientRequestDto clientRequestDto) {
-        return ResponseEntity.ok(clientService.updateClient(id, clientRequestDto));
+    public ResponseEntity<ClientResponseDto> updateClient(@PathVariable Long id, @Valid @RequestBody ClientResponseDto clientDto) {
+        return ResponseEntity.ok(clientService.updateClient(id, clientDto));
     }
 
     @DeleteMapping("/{id}")
