@@ -93,6 +93,7 @@ public class DevisServiceImpl implements DevisService {
             existingDevis.getMeta().setOffreTechnique(devisRequestDTO.getOffreTechnique());
             existingDevis.getMeta().setConditions(devisRequestDTO.getConditions());
             existingDevis.getMeta().setPlanning(devisRequestDTO.getPlanning());
+            existingDevis.getMeta().setOffrePdfUrl(devisRequestDTO.getOffrePdfUrl());
         }
         existingDevis.getLignes().clear();
         List<DevisLigne> nouvelleLignes = devisRequestDTO.getLignes().stream()
@@ -100,6 +101,7 @@ public class DevisServiceImpl implements DevisService {
                 .toList();
         nouvelleLignes.forEach(ligne -> ligne.setDevis(existingDevis));
         existingDevis.getLignes().addAll(nouvelleLignes);
+        existingDevis.calculerTotals();
         Devis updatedDevis = devisRepository.save(existingDevis);
         return devisMapper.toDto(updatedDevis);
     }
