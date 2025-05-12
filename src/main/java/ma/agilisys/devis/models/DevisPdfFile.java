@@ -24,6 +24,7 @@ public class DevisPdfFile {
 
     @Lob
     @Column(nullable = false)
+    @Basic(fetch = FetchType.EAGER)
     private byte[] data;
 
     @OneToOne
