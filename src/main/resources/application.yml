@@ -24,4 +24,5 @@ app:
     upload-dir: ./uploads
   pdf:
     generation:
-      batch-delay: 120000 # 2 minutes en millisecondes
+      batch-delay: 60000
+

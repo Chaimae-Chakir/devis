@@ -19,4 +19,7 @@ public interface DevisRepository extends JpaRepository<Devis, Long> {
 
     @EntityGraph(attributePaths = {"client", "lignes", "meta"})
     Page<Devis> findAll(Pageable pageable);
+
+    @Query("SELECT d FROM Devis d WHERE d.statut = :statut AND NOT EXISTS (SELECT p FROM DevisPdfFile p WHERE p.devis = d)")
+    List<Devis> findApprovedDevisWithoutPdf(String statut);
 }
