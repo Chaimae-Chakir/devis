@@ -65,6 +65,7 @@ public class DevisServiceImpl implements DevisService {
         devis.setStatut(Constants.DRAFT_STATUS);
         devis.setClient(client);
         devis.setDateCreation(ZonedDateTime.now());
+        devis.setCreatedBy(client.getNom());
         List<DevisLigne> lignes = devisRequestDTO.getLignes().stream()
                 .map(devisLigneMapper::toEntity)
                 .toList();
