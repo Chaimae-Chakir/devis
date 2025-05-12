@@ -22,7 +22,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
@@ -66,21 +66,11 @@ public class BatchConfig {
         return devis -> {
             try {
                 log.info("Génération du PDF pour le devis ID: {}", devis.getId());
-
                 byte[] pdf = pdfGenerator.generateDevisPdf(devis.getId());
                 String fileName = "devis_" + devis.getNumero() + "_" +
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf";
-
+                        ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf";
                 Optional<DevisPdfFile> existingFile = devisPdfFileRepository.findByDevis_Id(devis.getId());
-
-                if (existingFile.isPresent()) {
-                    DevisPdfFile file = existingFile.get();
-                    file.setData(pdf);
-                    file.setFileName(fileName);
-                    file.setFileType("application/pdf");
-                    file.setDevis(devis);
-                    devisPdfFileRepository.save(file);
-                } else {
+                if (existingFile.isEmpty()) {
                     DevisPdfFile newFile = new DevisPdfFile();
                     newFile.setData(pdf);
                     newFile.setFileName(fileName);
@@ -88,13 +78,10 @@ public class BatchConfig {
                     newFile.setDevis(devis);
                     devisPdfFileRepository.save(newFile);
                 }
-
                 log.info("PDF enregistré avec succès pour le devis ID: {}", devis.getId());
-
                 if (devis.getMeta() != null) {
                     devis.getMeta().setOffrePdfUrl("/api/devis/" + devis.getId() + "/pdf");
                 }
-
                 return devis;
             } catch (Exception e) {
                 log.error("Erreur lors de la génération du PDF pour le devis ID: {}", devis.getId(), e);

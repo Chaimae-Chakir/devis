@@ -25,7 +25,7 @@ public class DevisItemReader implements ItemReader<Devis> {
             log.info("{} devis approuvés sans PDF trouvés.", devisList.size());
             devisIterator = devisList.iterator();
             if (!devisIterator.hasNext()) {
-                return null; // Fin de lecture
+                return null;
             }
         }
         return devisIterator.next();
