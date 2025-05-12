@@ -13,6 +13,7 @@ import ma.agilisys.devis.models.Devis;
 import ma.agilisys.devis.models.DevisLigne;
 import ma.agilisys.devis.models.DevisMeta;
 import ma.agilisys.devis.repositories.ClientRepository;
+import ma.agilisys.devis.repositories.DevisPdfFileRepository;
 import ma.agilisys.devis.repositories.DevisRepository;
 import ma.agilisys.devis.services.DevisService;
 import ma.agilisys.devis.utils.Constants;
@@ -33,6 +34,7 @@ public class DevisServiceImpl implements DevisService {
     private final DevisNumberGenerator devisNumberGenerator;
     private final DevisMapper devisMapper;
     private final DevisLigneMapper devisLigneMapper;
+    private final DevisPdfFileRepository devisPdfFileRepository;
 
     @Override
     public DevisPageDto getAllDevis(int page, int size) {
@@ -164,6 +166,7 @@ public class DevisServiceImpl implements DevisService {
     public void deleteDevis(Long id) {
         Devis devis = devisRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Devis non trouvé avec l'ID: " + id));
+        devisPdfFileRepository.findByDevis_Id(id).ifPresent(devisPdfFileRepository::delete);
         devisRepository.delete(devis);
     }
 }
