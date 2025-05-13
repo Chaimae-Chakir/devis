@@ -1,59 +1,106 @@
 package ma.agilisys.devis.security;
 
-import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
+@EnableMethodSecurity
 public class SecurityConfig {
-    private final KeycloakRoleConverter keycloakRoleConverter;
+
+
+    @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
+    private String jwkSetUri;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(request -> {
-                    CorsConfiguration cors1 = new CorsConfiguration();
-                    cors1.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
-                    cors1.setAllowedMethods(Collections.singletonList("*"));
-                    cors1.setAllowedHeaders(Collections.singletonList("*"));
-                    cors1.setExposedHeaders(Collections.singletonList("Authorization"));
-                    return cors1;
-                }))
-                .authorizeHttpRequests(requests -> requests
-                        .requestMatchers(HttpMethod.GET, "/api/clients/**").hasAnyAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/clients").hasAnyAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/clients/**").hasAnyAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/clients/**").hasAnyAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/contacts").hasAnyAuthority("ADMIN", "USER")
-                        .requestMatchers(HttpMethod.GET, "/api/contacts/client/**").hasAnyAuthority("ADMIN", "USER")
-                        .requestMatchers(HttpMethod.GET, "/api/v1/devis/**").hasAnyAuthority("ADMIN", "USER")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/devis").hasAnyAuthority("ADMIN", "USER")
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/devis/**").hasAnyAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/devis/**").hasAnyAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/devis/**/duplicate").hasAnyAuthority("ADMIN", "USER")
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/devis/**/validate").hasAnyAuthority("ADMIN")
-                        .requestMatchers(
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html"
-                        ).permitAll()
-                        .anyRequest().authenticated())
-                //  .oauth2ResourceServer(rs -> rs.jwt(Customizer.withDefaults()));
-                .oauth2ResourceServer(rs -> rs.jwt(jwt ->
-                        jwt.jwtAuthenticationConverter(keycloakRoleConverter)));
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/public/**").permitAll()
+                        .requestMatchers("/api/clients/**").permitAll()
+                        .requestMatchers("/api/v1/devis/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt
+                                .jwtAuthenticationConverter(jwtAuthenticationConverter())
+                        )
+                );
+
         return http.build();
+    }
+
+    @Bean
+    public Converter<Jwt, AbstractAuthenticationToken> jwtAuthenticationConverter() {
+        JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
+        jwtConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter());
+        return jwtConverter;
+    }
+
+    @Bean
+    public Converter<Jwt, Collection<GrantedAuthority>> jwtGrantedAuthoritiesConverter() {
+        return new Converter<Jwt, Collection<GrantedAuthority>>() {
+            @Override
+            public Collection<GrantedAuthority> convert(Jwt jwt) {
+                JwtGrantedAuthoritiesConverter converter = new JwtGrantedAuthoritiesConverter();
+                converter.setAuthorityPrefix("ROLE_");
+                Collection<GrantedAuthority> grantedAuthorities = converter.convert(jwt);
+
+                if (jwt.getClaim("realm_access") != null) {
+                    Map<String, Object> realmAccess = jwt.getClaim("realm_access");
+                    if (realmAccess.get("roles") != null) {
+                        @SuppressWarnings("unchecked")
+                        List<String> roles = (List<String>) realmAccess.get("roles");
+                        Collection<GrantedAuthority> roleAuthorities = roles.stream()
+                                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
+                                .collect(Collectors.toList());
+                        grantedAuthorities.addAll(roleAuthorities);
+                    }
+                }
+
+                return grantedAuthorities;
+            }
+        };
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8090", "http://localhost:4200"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
