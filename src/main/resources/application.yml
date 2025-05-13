@@ -16,6 +16,12 @@ spring:
       enabled: false
     jdbc:
       initialize-schema: always
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8090/realms/chakir-realm
+          jwk-set-uri: http://localhost:8090/realms/chakir-realm/protocol/openid-connect/certs
 server:
   port: 8081
 
@@ -25,4 +31,5 @@ app:
   pdf:
     generation:
       batch-delay: 120000
+
 
