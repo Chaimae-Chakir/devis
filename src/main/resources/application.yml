@@ -28,6 +28,7 @@ app:
   pdf:
     generation:
       batch-delay: 120000
+
 keycloak:
   realm: chakir-realm
   auth-server-url: http://localhost:8090
