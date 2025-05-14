@@ -1,5 +1,6 @@
 package ma.agilisys.devis.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,6 +18,7 @@ public class DevisMeta {
     @OneToOne
     @MapsId
     @JoinColumn(name = "id_devis")
+    @JsonBackReference("devis-meta")
     private Devis devis;
 
     @Column(columnDefinition = "TEXT")

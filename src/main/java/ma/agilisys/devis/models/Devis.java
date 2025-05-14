@@ -1,5 +1,6 @@
 package ma.agilisys.devis.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -18,7 +19,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"client", "meta", "bonCommandeClient"})
+@ToString(exclude = {"client", "meta", "bonCommandeClient", "lignes"})
 public class Devis {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,9 +56,11 @@ public class Devis {
     private String validatedBy;
 
     @OneToMany(mappedBy = "devis", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference("devis-lignes")
     private List<DevisLigne> lignes = new ArrayList<>();
 
     @OneToOne(mappedBy = "devis", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("devis-meta")
     private DevisMeta meta;
 
     @OneToOne(mappedBy = "devis")

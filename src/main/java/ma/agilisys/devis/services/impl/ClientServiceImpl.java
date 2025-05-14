@@ -11,7 +11,6 @@ import ma.agilisys.devis.models.Client;
 import ma.agilisys.devis.models.Contact;
 import ma.agilisys.devis.models.Devis;
 import ma.agilisys.devis.repositories.ClientRepository;
-import ma.agilisys.devis.repositories.DevisPdfFileRepository;
 import ma.agilisys.devis.repositories.DevisRepository;
 import ma.agilisys.devis.services.ClientService;
 import org.springframework.data.domain.Page;
@@ -32,7 +31,6 @@ public class ClientServiceImpl implements ClientService {
     private final ClientMapper clientMapper;
     private final ContactMapper contactMapper;
     private final DevisRepository devisRepository;
-    private final DevisPdfFileRepository devisPdfFileRepository;
 
     @Override
     public ClientResponseDto getClientById(Long id) {

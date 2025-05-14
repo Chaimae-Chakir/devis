@@ -13,8 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DevisRequestDTO {
-    @NotNull(message = "L'ID du client est obligatoire")
-    private Long clientId;
+    @NotNull(message = "Le client est obligatoire")
+    private ClientRequestDto client;
 
     @Valid
     private List<DevisLigneRequestDTO> lignes = new ArrayList<>();

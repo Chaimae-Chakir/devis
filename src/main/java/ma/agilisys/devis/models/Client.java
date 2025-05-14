@@ -1,5 +1,6 @@
 package ma.agilisys.devis.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -46,8 +47,10 @@ public class Client {
     private ZonedDateTime dateCreation = ZonedDateTime.now();
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("client-contacts")
     private Set<Contact> contacts = new HashSet<>();
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("client-devis")
     private List<Devis> devis = new ArrayList<>();
 }

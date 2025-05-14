@@ -3,6 +3,7 @@ package ma.agilisys.devis.services.impl;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import ma.agilisys.devis.dtos.ClientResponseDto;
 import ma.agilisys.devis.dtos.DevisPageDto;
 import ma.agilisys.devis.dtos.DevisRequestDTO;
 import ma.agilisys.devis.dtos.DevisResponseDTO;
@@ -15,6 +16,7 @@ import ma.agilisys.devis.models.DevisMeta;
 import ma.agilisys.devis.repositories.ClientRepository;
 import ma.agilisys.devis.repositories.DevisPdfFileRepository;
 import ma.agilisys.devis.repositories.DevisRepository;
+import ma.agilisys.devis.services.ClientService;
 import ma.agilisys.devis.services.DevisService;
 import ma.agilisys.devis.utils.Constants;
 import ma.agilisys.devis.utils.DevisNumberGenerator;
@@ -35,6 +37,7 @@ public class DevisServiceImpl implements DevisService {
     private final DevisMapper devisMapper;
     private final DevisLigneMapper devisLigneMapper;
     private final DevisPdfFileRepository devisPdfFileRepository;
+    private final ClientService clientService;
 
     @Override
     public DevisPageDto getAllDevis(int page, int size) {
@@ -58,12 +61,12 @@ public class DevisServiceImpl implements DevisService {
     @Transactional
     @Override
     public DevisResponseDTO createDevis(DevisRequestDTO devisRequestDTO) {
-        Client client = clientRepository.findById(devisRequestDTO.getClientId())
-                .orElseThrow(() -> new EntityNotFoundException("Client non trouvé avec l'ID: " + devisRequestDTO.getClientId()));
+        ClientResponseDto client = clientService.createClient(devisRequestDTO.getClient());
+        Client clientEntity = clientRepository.findById(client.getId()).orElseThrow(() -> new EntityNotFoundException("client no found"));
         Devis devis = devisMapper.toEntity(devisRequestDTO);
         devis.setNumero(devisNumberGenerator.generateUniqueNumber());
         devis.setStatut(Constants.DRAFT_STATUS);
-        devis.setClient(client);
+        devis.setClient(clientEntity);
         devis.setDateCreation(ZonedDateTime.now());
         devis.setCreatedBy(client.getNom());
         List<DevisLigne> lignes = devisRequestDTO.getLignes().stream()
@@ -97,6 +100,13 @@ public class DevisServiceImpl implements DevisService {
             existingDevis.getMeta().setConditions(devisRequestDTO.getConditions());
             existingDevis.getMeta().setPlanning(devisRequestDTO.getPlanning());
             existingDevis.getMeta().setOffrePdfUrl(devisRequestDTO.getOffrePdfUrl());
+        }
+        if (devisRequestDTO.getClient() != null) {
+            existingDevis.getClient().setNom(devisRequestDTO.getClient().getNom());
+            existingDevis.getClient().setAdresse(devisRequestDTO.getClient().getAdresse());
+            existingDevis.getClient().setIce(devisRequestDTO.getClient().getIce());
+            existingDevis.getClient().setVille(devisRequestDTO.getClient().getVille());
+            existingDevis.getClient().setPays(devisRequestDTO.getClient().getPays());
         }
         existingDevis.getLignes().clear();
         List<DevisLigne> nouvelleLignes = devisRequestDTO.getLignes().stream()

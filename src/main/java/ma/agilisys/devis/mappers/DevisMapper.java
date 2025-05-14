@@ -9,8 +9,6 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring", uses = {DevisLigneMapper.class})
 public interface DevisMapper {
 
-    @Mapping(target = "clientNom", source = "client.nom")
-    @Mapping(target = "clientId", source = "client.id")
     @Mapping(target = "perimetre", source = "meta.perimetre")
     @Mapping(target = "offreFonctionnelle", source = "meta.offreFonctionnelle")
     @Mapping(target = "offreTechnique", source = "meta.offreTechnique")
@@ -19,7 +17,6 @@ public interface DevisMapper {
     @Mapping(target = "offrePdfUrl", source = "meta.offrePdfUrl")
     DevisResponseDTO toDto(Devis devis);
 
-    //    @Mapping(target = "client", source = "clientId")
     @Mapping(target = "meta", ignore = true)
     @Mapping(target = "bonCommandeClient", ignore = true)
     Devis toEntity(DevisRequestDTO devisRequestDTO);

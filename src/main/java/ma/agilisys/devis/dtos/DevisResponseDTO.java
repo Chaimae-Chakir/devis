@@ -21,10 +21,8 @@ public class DevisResponseDTO {
 
     private String numero; // Généré automatiquement
 
-    @NotNull(message = "L'ID du client est obligatoire")
-    private Long clientId;
-
-    private String clientNom; // Pour l'affichage
+    @NotNull(message = "Le client est obligatoire")
+    private ClientResponseDto client;
 
     @NotBlank(message = "Le statut est obligatoire")
     @Size(max = 20, message = "Le statut ne peut pas dépasser 20 caractères")

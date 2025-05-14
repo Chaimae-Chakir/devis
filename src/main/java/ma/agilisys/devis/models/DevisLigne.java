@@ -1,5 +1,6 @@
 package ma.agilisys.devis.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,7 @@ public class DevisLigne {
 
     @ManyToOne
     @JoinColumn(name = "id_devis", nullable = false)
+    @JsonBackReference("devis-lignes")
     private Devis devis;
 
     @Column(name = "description_libre", length = 255)
