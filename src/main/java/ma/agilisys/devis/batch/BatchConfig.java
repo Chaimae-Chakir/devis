@@ -6,7 +6,7 @@ import ma.agilisys.devis.models.Devis;
 import ma.agilisys.devis.models.DevisPdfFile;
 import ma.agilisys.devis.repositories.DevisPdfFileRepository;
 import ma.agilisys.devis.repositories.DevisRepository;
-import ma.agilisys.devis.services.DevisPdfGenerator;
+import ma.agilisys.devis.services.impl.DevisPdfGeneratorImpl;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -32,7 +32,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class BatchConfig {
-    private final DevisPdfGenerator pdfGenerator;
+    private final DevisPdfGeneratorImpl pdfGenerator;
     private final DevisRepository devisRepository;
     private final DevisPdfFileRepository devisPdfFileRepository;
 
@@ -69,6 +69,12 @@ public class BatchConfig {
                 byte[] pdf = pdfGenerator.generateDevisPdf(devis.getId());
                 String fileName = "devis_" + devis.getNumero() + "_" +
                         ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf";
+
+                // Check if PDF was generated
+                if (pdf == null || pdf.length == 0) {
+                    throw new RuntimeException("Generated PDF is empty");
+                }
+
                 Optional<DevisPdfFile> existingFile = devisPdfFileRepository.findByDevis_Id(devis.getId());
                 if (existingFile.isEmpty()) {
                     DevisPdfFile newFile = new DevisPdfFile();
@@ -78,6 +84,7 @@ public class BatchConfig {
                     newFile.setDevis(devis);
                     devisPdfFileRepository.save(newFile);
                 }
+
                 log.info("PDF enregistré avec succès pour le devis ID: {}", devis.getId());
                 if (devis.getMeta() != null) {
                     devis.getMeta().setOffrePdfUrl("/api/devis/" + devis.getId() + "/pdf");
