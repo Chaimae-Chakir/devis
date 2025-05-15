@@ -3,187 +3,10 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Devis ${devis.numero}</title>
-    <style>
-        /* Reset and base styles */
-        body, html {
-            margin: 0;
-            padding: 0;
-            font-family: "Arial", sans-serif;
-            font-size: 11pt;
-            line-height: 1.5;
-            color: #000;
-        }
-
-        /* Page setup */
-        @page {
-            size: A4;
-            margin: 0;
-        }
-
-        .page {
-            width: 210mm;
-            height: 297mm;
-            position: relative;
-            padding: 15mm;
-            box-sizing: border-box;
-            overflow: hidden;
-            page-break-after: always;
-        }
-
-        /* Header styles */
-        .header-container {
-            position: relative;
-            width: 100%;
-            margin-bottom: 20px;
-            padding: 0;
-        }
-
-        .logo-container {
-            display: inline-block;
-            vertical-align: top;
-        }
-
-        .logo-container img {
-            height: 80px;
-            width: auto;
-        }
-
-        .info-container {
-            position: absolute;
-            top: 0;
-            right: 0;
-            text-align: right;
-            font-size: 12px;
-        }
-
-        .info-line {
-            line-height: 1.4;
-            margin: 0;
-            padding: 0;
-            white-space: nowrap;
-        }
-
-        /* Devis header */
-
-        .devis-info-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 5px;
-            font-size: 10pt;
-        }
-
-        .devis-info-table td {
-            padding: 5px 8px;
-            vertical-align: top;
-            border: none;
-        }
-
-        .devis-info-table .label {
-            font-weight: bold;
-            width: 20%;
-        }
-
-        .client-ice {
-            text-align: right;
-            font-size: 10pt;
-            margin-bottom: 20px;
-        }
-
-        /* Content sections */
-        .section-title {
-            font-size: 14pt;
-            margin: 10px 0;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #ddd;
-            color: #17a2b8;
-        }
-
-        /* Container spécifique pour les images */
-        .image-fixed-container {
-            width: 180mm;
-            height: 90mm;
-            margin: 10px auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            page-break-inside: avoid;
-        }
-
-        .image-fixed-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-        }
-
-        /* Tables */
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 15px 0;
-            font-size: 10pt;
-            page-break-inside: avoid;
-        }
-
-        .data-table th, .data-table td {
-            border: 1px solid #000;
-            padding: 8px;
-            text-align: left;
-        }
-
-        .data-table th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-
-        /* Footer */
-        .footer {
-            position: absolute;
-            bottom: 10mm;
-            left: 15mm;
-            right: 15mm;
-            padding: 5px 0;
-            font-size: 7pt;
-            text-align: center;
-            border-top: 1px solid green;
-            width: calc(100% - 30mm);
-            line-height: 1.2;
-            margin-top: 10mm; /* Nouvelle marge pour séparer du contenu */
-            color: #003366;
-        }
-
-        /* Contenu principal avec marge protégeant le footer */
-        .main-content {
-            padding-bottom: 25mm; /* Augmentation de l'espace réservé pour le footer */
-            margin-bottom: 10mm; /* Espace supplémentaire avant le footer */
-            height: calc(100% - 25mm);
-        }
-
-        .highlight {
-            background-color: #ffff00;
-            display: inline-block;
-        }
-
-        /* Utility classes */
-        .bold-italic {
-            font-weight: bold;
-            font-style: italic;
-        }
-
-        .text-right {
-            text-align: right;
-            margin-top: 30px;
-        }
-
-        .bold {
-            font-weight: bold;
-        }
-    </style>
+    <link rel="stylesheet" href="classpath:/static/css/styles.css"/>
 </head>
 <body>
 
-<!-- Page 1 -->
 <div class="page">
     <div class="header-container">
         <div class="logo-container">
@@ -264,7 +87,6 @@
     </div>
 </div>
 
-<!-- Page 2 -->
 <div class="page">
     <div class="main-content">
         <p> dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora
@@ -305,7 +127,6 @@
     </div>
 </div>
 
-<!-- Page 3 -->
 <div class="page">
     <div class="main-content">
         <div class="image-fixed-container">
@@ -393,7 +214,6 @@
     </div>
 </div>
 
-<!-- Page 4 -->
 <div class="page">
     <div class="main-content">
     </div>
