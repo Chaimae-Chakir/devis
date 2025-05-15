@@ -22,4 +22,6 @@ public interface DevisRepository extends JpaRepository<Devis, Long> {
 
     @Query("SELECT d FROM Devis d WHERE d.statut = :statut AND NOT EXISTS (SELECT p FROM DevisPdfFile p WHERE p.devis = d)")
     List<Devis> findApprovedDevisWithoutPdf(String statut);
+
+    Page<Devis> findAllByClient_Id(Long id, Pageable pageable);
 }

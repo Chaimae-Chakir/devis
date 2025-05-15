@@ -24,4 +24,6 @@ public interface DevisService {
 
     @Transactional
     void deleteDevis(Long id);
+
+    DevisPageDto getAllDevisByClientId(Long id, int page, int size);
 }

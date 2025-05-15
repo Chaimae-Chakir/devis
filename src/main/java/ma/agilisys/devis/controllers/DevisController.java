@@ -30,6 +30,14 @@ public class DevisController {
         return ResponseEntity.ok(devisService.getAllDevis(page, size));
     }
 
+    @GetMapping("/client/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<DevisPageDto> getAllDevisByClientId(@PathVariable Long id,
+                                                              @RequestParam(defaultValue = "0") int page,
+                                                              @RequestParam(defaultValue = "5") int size) {
+        return ResponseEntity.ok(devisService.getAllDevisByClientId(id, page, size));
+    }
+
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<DevisResponseDTO> getDevisById(@PathVariable Long id) {

@@ -180,4 +180,16 @@ public class DevisServiceImpl implements DevisService {
         devisPdfFileRepository.findByDevis_Id(id).ifPresent(devisPdfFileRepository::delete);
         devisRepository.delete(devis);
     }
+
+    @Override
+    public DevisPageDto getAllDevisByClientId(Long id, int page, int size) {
+        Page<Devis> devisPage = devisRepository.findAllByClient_Id(id, PageRequest.of(page, size));
+        return DevisPageDto.builder()
+                .currentPage(page)
+                .pageSize(size)
+                .totalPages(devisPage.getTotalPages())
+                .totalElements(devisPage.getTotalElements())
+                .devis(devisPage.getContent().stream().map(devisMapper::toDto).toList())
+                .build();
+    }
 }

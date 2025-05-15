@@ -30,11 +30,12 @@
                 <tr>
                     <td class="label">Numéro du devis</td>
                     <td>${devis.numero}</td>
-                    <td class="label">Client</td>
+                    <td class="label">${devis.client.nom}</td>
                 </tr>
                 <tr>
                     <td class="label">Date devis</td>
-                    <#--                    <td><#if devis.dateCreation??>${devis.dateCreation?string('dd/MM/yyyy')}<#else>N/A</#if></td>-->
+                    <td>${devis.dateCreation}</td>
+                    <td class="label">${devis.client.adresse}</td>
                     <td></td>
                 </tr>
                 <tr>
@@ -45,7 +46,7 @@
             </table>
 
             <div class="client-ice">
-                ICE : 0016514141000019
+                ICE : ${devis.client.ice}
             </div>
         </div>
 
@@ -53,6 +54,7 @@
         <p class="bold-italic">Lorem Ipsum</p>
 
         <div class="section-title">Périmètre Fonctionnel</div>
+        <p>${devis.meta.perimetre}</p>
         <p>
             Le <span class="bold-italic">Lorem Ipsum</span> est simplement du faux texte employé dans la composition et
             la mise
@@ -113,7 +115,7 @@
         <div class="image-fixed-container">
             <img src="classpath:/static/images/planning.jpg" alt="Planning de projet"/>
         </div>
-        <p>
+        <p> ${devis.meta.planning}
             que survivre cinq siècles, mais s'est aussi adapté à la bureautique informatique, sans que son contenu
             n'en soit modifié. Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset
             contenant des passages du Lorem Ipsum, et, plus récemment, par son inclusion dans des applications
