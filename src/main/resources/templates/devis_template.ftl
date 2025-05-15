@@ -4,176 +4,405 @@
     <meta charset="UTF-8"/>
     <title>Devis ${devis.numero}</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        /* Reset and base styles */
+        body, html {
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            font-family: "Arial", sans-serif;
+            font-size: 11pt;
             line-height: 1.5;
+            color: #000;
         }
 
-        .devis-table {
+        /* Page setup */
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        .page {
+            width: 210mm;
+            height: 297mm;
+            position: relative;
+            padding: 15mm;
+            box-sizing: border-box;
+            overflow: hidden;
+            page-break-after: always;
+        }
+
+        /* Header styles */
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 5px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-container img {
+            height: 50px;
+            width: auto;
+            margin-right: 20px;
+        }
+
+        .info-container {
+            text-align: right;
+            font-size: 10pt;
+        }
+
+        .info-line {
+            margin: 2px 0;
+            line-height: 1.3;
+        }
+
+        /* Devis header */
+        .devis-header {
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+
+        .devis-info-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 30px;
+            margin-bottom: 5px;
+            font-size: 10pt;
         }
 
-        .devis-table td {
-            border: 1px solid #000;
-            padding: 5px;
+        .devis-info-table td {
+            padding: 5px 8px;
             vertical-align: top;
+            border: none;
         }
 
-        .bold {
+        .devis-info-table .label {
+            font-weight: bold;
+            width: 20%;
+        }
+
+        .client-ice {
+            text-align: right;
+            font-size: 10pt;
+            margin-bottom: 20px;
+        }
+
+        /* Content sections */
+        .section-title {
+            font-size: 14pt;
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .subsection-title {
+            font-weight: bold;
+            font-style: italic;
+            margin: 15px 0 8px 0;
+        }
+
+        /* Container spécifique pour les images */
+        .image-fixed-container {
+            width: 180mm;
+            height: 90mm;
+            margin: 10px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            page-break-inside: avoid;
+        }
+
+        .image-fixed-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 10pt;
+            page-break-inside: avoid;
+        }
+
+        .data-table th, .data-table td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background-color: #f2f2f2;
             font-weight: bold;
         }
 
-        .section {
-            margin: 20px 0;
-        }
-
-        .image-container {
+        /* Footer */
+        .footer {
+            position: absolute;
+            bottom: 10mm;
+            left: 15mm;
+            right: 15mm;
+            padding: 5px 0;
+            font-size: 7pt;
             text-align: center;
-            margin: 15px 0;
+            border-top: 1px solid #ddd;
+            width: calc(100% - 30mm);
+            line-height: 1.2;
+            margin-top: 10mm; /* Nouvelle marge pour séparer du contenu */
         }
 
-        .image-container img {
-            width: 6.69in;
-            height: auto;
+        /* Contenu principal avec marge protégeant le footer */
+        .main-content {
+            padding-bottom: 25mm; /* Augmentation de l'espace réservé pour le footer */
+            margin-bottom: 10mm; /* Espace supplémentaire avant le footer */
         }
 
-        .signature {
+        /* Utility classes */
+        .bold-italic {
+            font-weight: bold;
+            font-style: italic;
+        }
+
+        .text-right {
             text-align: right;
-            margin-top: 50px;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .highlight {
+            background-color: #f8f8f8;
+            padding: 10px;
             margin: 15px 0;
-        }
-
-        table, th, td {
-            border: 1px solid #000;
-        }
-
-        th, td {
-            padding: 8px;
-            text-align: left;
+            border-left: 3px solid #ccc;
         }
     </style>
 </head>
 <body>
-<!-- En-tête du devis -->
-<table class="devis-table">
-    <tr>
-        <td style="width: 30%;">
-            <div class="bold">Numéro du devis</div>
-            <div>${devis.numero}</div>
-            <div class="bold">Date devis</div>
-            <#--            <div><#if devis.dateCreation??>${devis.dateCreation?string("dd/MM/yyyy")}<#else>N/A</#if></div>-->
-            <div class="bold">Montant du devis</div>
-            <div>${devis.totalHt} HT</div>
-        </td>
-        <td style="width: 25%;">
-            <div class="bold">Client</div>
-            <div>${devis.client.nom}</div>
-        </td>
-        <td style="width: 45%; text-align: right;">
-            <div>LOGO CLIENT</div>
-            <div>ICE: ${devis.client.ice}</div>
-        </td>
-    </tr>
-</table>
 
-<!-- Section Prestation -->
-<div class="section">
-    <div class="bold">Prestation</div>
-    <p class="bold">Lorem Ipsum</p>
-</div>
-
-<!-- Section Périmètre Fonctionnel -->
-<div class="section">
-    <div class="bold">Périmètre Fonctionnel</div>
-    <p>Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le
-        Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500, quand un imprimeur anonyme
-        assembla ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte.</p>
-</div>
-
-<!-- Section Standard Lorem Ipsum -->
-<div class="section">
-    <div class="bold">Le passage de Lorem Ipsum standard, utilisé depuis 1500</div>
-    <p class="bold">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-        et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat."</p>
-</div>
-
-<!-- Section Ciceron -->
-<div class="section">
-    <div class="bold">Section 1.10.32 du "De Finibus Bonorum et Malorum" de Ciceron (45 av. J.-C.)</div>
-    <p>"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem
-        aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo."</p>
-</div>
-
-<!-- Section Traduction -->
-<div class="section">
-    <div class="bold">Traduction de H. Rackham (1914)</div>
-    <p>"But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I
-        will give you a complete account of the system."</p>
-</div>
-
-<!-- Section Planning -->
-<div class="section">
-    <div class="bold">Planning</div>
-    <div class="image-container">
-        <img src="classpath:/templates/images/planning.jpg" alt="Planning"/>
+<!-- Page 1 -->
+<div class="page">
+    <div class="header-container">
+        <div class="logo-container">
+            <img src="classpath:/static/images/logo.png" alt="Logo Agilisys"/>
+        </div>
+        <div class="info-container">
+            <div class="info-line">ICE: 001568437000073</div>
+            <div class="info-line">www.agilisys.ma</div>
+            <div class="info-line">ayoubelabbassi@agilisys.ma</div>
+            <div class="info-line">0619826933</div>
+        </div>
     </div>
-    <p>que survivre cinq siècles, mais s'est aussi adapté à la bureautique informatique, sans que son contenu n'en soit
-        modifié. Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages
-        du Lorem Ipsum.</p>
-</div>
 
-<!-- Section Architecture Fonctionnelle -->
-<div class="section">
-    <div class="bold">Architecture Fonctionnelle</div>
-    <div class="image-container">
-        <img src="classpath:/templates/images/architecture.png" alt="Architecture Fonctionnelle"/>
+    <div class="main-content">
+        <div class="devis-header">
+            <h1 style="text-align: center; font-size: 18pt; margin-bottom: 15px; font-weight: bold;">Devis</h1>
+            <div class="client-ice">
+                LOGO client
+            </div>
+            <table class="devis-info-table">
+                <tr>
+                    <td class="label">Numéro du devis</td>
+                    <td>${devis.numero}</td>
+                    <td class="label">Client</td>
+                </tr>
+                <tr>
+                    <td class="label">Date devis</td>
+                    <#--                    <td><#if devis.dateCreation??>${devis.dateCreation?string('dd/MM/yyyy')}<#else>N/A</#if></td>-->
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="label">Montant du devis</td>
+                    <td>${devis.totalHt} HT</td>
+                    <td></td>
+                </tr>
+            </table>
+
+            <div class="client-ice">
+                ICE : 0016514141000019
+            </div>
+        </div>
+
+        <div class="section-title">Prestation</div>
+        <p class="bold-italic">Lorem Ipsum</p>
+
+        <div class="section-title">Périmètre Fonctionnel</div>
+        <p>
+            Le <span>Lorem Ipsum</span> est simplement du faux texte employé dans la composition et la mise en page
+            avant
+            impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500, quand
+            un imprimeur anonyme assembla ensemble des morceaux de texte pour réaliser un livre spécimen de
+            polices de texte. Il n'a pas fait que survivre cinq siècles, mais s'est aussi adapté à la bureautique
+            informatique, sans que son contenu n'en soit modifié. Il a été popularisé dans les années 1960 grâce à
+            la vente de feuilles Letraset contenant des passages du Lorem Ipsum, et, plus récemment, par son
+            inclusion dans des applications de mise en page de texte, comme Aldus PageMaker.
+        </p>
     </div>
-    <p>que survivre cinq siècles, mais s'est aussi adapté à la bureautique informatique, sans que son contenu n'en soit
-        modifié. Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages
-        du Lorem Ipsum.</p>
+
+    <div class="footer">
+        AGILISYS SARL AU Capital de 100 000.00 DH | ICE : 001568437000073 | Patente : 25728214 | IF : 1372126 | RC :
+        105883 | CNSS : 4418114 | Tél : 0619826933 | Adresse : 15 avenue ALABTAL appartement 4, 4ème étage Rabat Maroc
+    </div>
 </div>
 
-<!-- Section Estimation de charge -->
-<div class="section">
-    <div class="bold">Estimation de charge</div>
-    <table>
-        <tr>
-            <td style="height: 100px;"></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-    </table>
+<!-- Page 2 -->
+<div class="page">
+    <div class="main-content">
+        <p>Le passage de Lorem Ipsum standard, utilisé depuis 1500</p>
+        <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+            labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+            laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+            voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+            proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
+        <p>
+            Section 1.10.32 du "De Finibus Bonorum et Malorum" de Ciceron (45 av. J.-C.)
+        </p>
+        <p>
+            "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium,
+            totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt
+            explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
+            consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui
+            dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora
+            incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis
+            nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?
+            Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur,
+            vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"
+        </p>
+        <p>Traduction de H. Rackham (1914)
+            "But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born
+            and I will give you a complete account of the system, and expound the actual teachings of the great
+            explorer of the truth, the master-builder of human happiness. No one rejects, dislikes, or avoids pleasure
+            itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally
+            encounter consequences that are extremely painful. Nor again is there anyone who loves or pursues or
+            desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which
+            toil and pain can procure him some great pleasure. To take a trivial example, which of us ever undertakes
+            laborious physical exercise, except to obtain some advantage from it? But who has any right to find fault
+            with a man who chooses to enjoy a pleasure that has no annoying consequences, or one who avoids a
+            pain that produces no resultant pleasure?"
+        </p>
+
+        <div class="section-title">Planning</div>
+        <div class="image-fixed-container">
+            <img src="classpath:/static/images/planning.jpg" alt="Planning de projet"/>
+        </div>
+        <p>
+            que survivre cinq siècles, mais s'est aussi adapté à la bureautique informatique, sans que son contenu
+            n'en soit modifié. Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset
+            contenant des passages du Lorem Ipsum, et, plus récemment, par son inclusion dans des applications
+            de mise en page de texte, comme Aldus PageMaker
+        </p>
+    </div>
+
+    <div class="footer">
+        AGILISYS SARL AU Capital de 100 000.00 DH | ICE : 001651414100019 | Patente : 25728214 | IF : 1372126 | RC :
+        105883 | CNSS : 4418114 | Tél : 0619826933 | Adresse : 15 avenue ALABTAL appartement 4, 4ème étage Rabat Maroc
+    </div>
 </div>
 
-<!-- Section Offre financière et Conditions -->
-<div class="section">
-    <div class="bold">Offre financière et Conditions</div>
-    <table>
-        <tr>
-            <td style="height: 150px;"></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-    </table>
+<!-- Page 3 -->
+<div class="page">
+    <div class="main-content">
+        <div class="section-title">Architecture</div>
+        <div class="image-fixed-container">
+            <img src="classpath:/static/images/architecture.png" alt="Architecture fonctionnelle"/>
+        </div>
+
+        <p>
+            que survivre cinq siècles, mais s'est aussi adapté à la bureautique informatique, sans que son contenu
+            n'en soit modifié. Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset
+            contenant des passages du Lorem Ipsum, et, plus récemment, par son inclusion dans des applications
+            de mise en page de texte, comme Aldus PageMaker
+        </p>
+        <div class="section-title">Estimation de charge</div>
+        <table class="data-table">
+            <thead>
+            </thead>
+            <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="section-title">Offre financière et Conditions</div>
+        <table class="data-table">
+            <thead>
+            </thead>
+            <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="text-right" style="margin-top: 30px;">
+            Le 24/03/2023
+        </div>
+    </div>
+
+    <div class="footer">
+        AGILISYS SARL AU Capital de 100 000.00 DH | ICE : 001568437000073 | Patente : 25728214 | IF : 1372126 | RC :
+        105883 | CNSS : 4418114 | Tél : 0619826933 | Adresse : 15 avenue ALABTAL appartement 4, 4ème étage Rabat Maroc
+    </div>
 </div>
 
-<!-- Signature -->
-<div class="signature">
-    <p>Le ${.now?string("dd/MM/yyyy")}</p>
+<!-- Page 4 -->
+<div class="page">
+    <div class="main-content" style="height: calc(100% - 25mm);">
+    </div>
+
+    <div class="footer">
+        AGILISYS SARL AU Capital de 100 000.00 DH | ICE : 001568437000073 | Patente : 25728214 | IF : 1372126 | RC :
+        105883 | CNSS : 4418114 | Tél : 0619826933 | Adresse : 15 avenue ALABTAL appartement 4, 4ème étage Rabat Maroc
+    </div>
 </div>
+
 </body>
 </html>
